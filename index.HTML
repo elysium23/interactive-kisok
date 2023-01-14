@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Kiosk</title>
+  <style>
+    /* CSS styles for the webpage */
+    body {
+        background-color: black;
+    }
+    .logo {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .content {
+        position: relative;
+    }
+    #graphic, #pdf-frame, .logo {
+        max-width: 100%;
+    }
+    #file-input, #prev-btn, #next-btn {
+        display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img id="logo" src="" alt="Uploaded Logo">
+  </div>
+  <div class="content">
+    <img id="graphic" src="" alt="Uploaded Graphic">
+    <iframe id="pdf-frame" src="" style="display: none;"></iframe>
+  </div>
+  <input type="file" id="file-input" onchange="handleFileUpload()">
+  <button id="prev-btn" onclick="prevGraphic()">Previous</button>
+  <button id="next-btn" onclick="nextGraphic()">Next</button>
+  <script>
+    // JavaScript for handling file uploads and navigating through graphics
+    let currentGraphic = 0;
+    let graphicArray = [];
+    let logoSrc = '';
+    function handleFileUpload() {
+      let fileInput = document.getElementById("file-input");
+      let files = fileInput.files;
+      for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        if (file.type.includes("image")) {
+          if(file.name.toLowerCase().includes('logo')){
+            logoSrc = URL.createObjectURL(file);
+            document.getElementById("logo").src = logoSrc;
+          }else{
+            graphicArray.push(URL.createObjectURL(file));
+          }
+        } else if (file.type.includes("pdf")) {
+          graphicArray.push(URL.createObjectURL(file));
+        }
+      }
+      document.getElementById("file-input").style.display = "none";
+      document.getElementById("prev-btn").style.display = "block";
+      document.getElementById("next-btn").style.display = "block";
+      displayGraphic(0);
+    }
+
+    function displayGraphic(index) {
+      currentGraphic = index;
+      let graphic = document.getElementById("graphic");
+      let pdfFrame = document.getElementById("pdf-frame");
+      if (graphicArray[index].endsWith(".pdf")) {
+        pdfFrame.style.display = "block";
+        graphic.style.display = "none";
+        pdfFrame.src = graphicArray[index];
+      } else {
+        pdfFrame.style.display = "none";
+        graphic.style.display = "block";
+        graphic.src = graphicArray[index];
+      }
+    }
+    function prevGraphic() {
+      if (currentGraphic === 0) {
+        currentGraphic = graphicArray.length - 1;
+      } else {
+        currentGraphic--;
+      }
+      displayGraphic(currentGraphic);
+    }
+
+    function nextGraphic() {
+      if (currentGraphic === graphicArray.length - 1) {
+        currentGraphic = 0;
+      } else {
+        currentGraphic++;
+      }
+      displayGraphic(currentGraphic);
+    }
+  </script>
+</body>
+</html>
