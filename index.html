@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Embed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script>
+        var pdfUrl = "https://github.com/elysium23/interactive-kisok/blob/main/ES.pdf"; // URL of the PDF file
+        var pdfContainer = document.getElementById("pdf-container");
+        var pdfCanvas = document.getElementById("pdf-canvas");
+        var pdfScale = 1.5;
+
+        // Function to render the PDF
+        function renderPdf() {
+            // Loading the PDF
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                // Get the first page
+                pdf.getPage(1).then(function(page) {
+                    // Set the scale of the viewport
+                    var viewport = page.getViewport({ scale: pdfScale });
+                    // Set the canvas size
+                    pdfCanvas.height = viewport.height;
+                    pdfCanvas.width = viewport.width;
+                    // Render the PDF
+                    var renderContext = {
+                        canvasContext: pdfCanvas.getContext("2d"),
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                });
+            });
+        }
+         // Reset the pdf after 2 minutes of being idle
+        var timeout;
+        document.onmousemove = function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                renderPdf();
+            }, 120000); // 2 minutes in milliseconds
+        };
+        renderPdf();
+    </script>
+</head>
+<body>
+    <div id="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+</body>
+</html>
