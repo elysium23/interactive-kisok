@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PDF Embed</title>
+  </head>
+  <body>
+    <iframe id="pdf-frame" src="https://github.com/elysium23/interactive-kisok/blob/main/Bellagio%20Spas%20Display%20Brochure.pdf" style="width:100%; height:100%;"></iframe>
+    <script>
+    var timeout;
+    document.onmousemove = function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            var iframe = document.querySelector("iframe");
+            iframe.src = iframe.src;
+        }, 120000); // 2 minutes in milliseconds
+    };
+    </script>
+  </body>
+</html>
